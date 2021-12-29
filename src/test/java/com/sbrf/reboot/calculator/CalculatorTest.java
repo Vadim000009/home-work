@@ -1,5 +1,6 @@
 package com.sbrf.reboot.calculator;
 
+import com.sbrf.reboot.Calculator;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
