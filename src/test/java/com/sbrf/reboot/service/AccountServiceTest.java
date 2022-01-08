@@ -58,6 +58,23 @@ class AccountServiceTest {
     }
 
     @Test
+    void foundClientIdByContractNumber() {
+        Set<Long> accounts = new HashSet();
+        Set<Long> contactsOfAccountFst = new HashSet<>();
+        Set<Long> contactsOfAccountSec = new HashSet<>();
+        accounts.add(10L);
+        accounts.add(20L);
+        contactsOfAccountFst.add(10_100L);
+        contactsOfAccountSec.add(20_100L);
+
+        when(accountRepository.getAllAccounts()).thenReturn(accounts);
+        when(accountRepository.getAllAccountsByClientId(20L)).thenReturn(contactsOfAccountFst);
+        when(accountRepository.getAllAccountsByClientId(10L)).thenReturn(contactsOfAccountSec);
+
+        assertEquals(10L, accountService.getClientIdByContractNumber(10_100L));
+    }
+
+    @Test
     void repositoryHasTreeMethods() {
         assertEquals(2, AccountRepository.class.getMethods().length);
     }
