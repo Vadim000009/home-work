@@ -28,6 +28,21 @@ class CalculatorTest {
     }
 
     @Test
+    void getPowerSquare() {
+        assertEquals(81, new Calculator().getPowerSquare(9));
+    }
+
+    @Test
+    void getSqrt() {
+        assertEquals(3, new Calculator().getSqrt(9));
+    }
+
+    @Test
+    void getPowerCube() {
+        assertEquals(27, new Calculator().getPowerCube(3));
+    }
+
+    @Test
     void classHasSevenMethods() {
         assertEquals(7, Calculator.class.getMethods().length - Object.class.getMethods().length);
     }
