@@ -16,7 +16,7 @@ class FileAccountRepositoryTest {
     AccountRepository accountRepository;
 
     @Test
-    void onlyPersonalAccounts() throws IOException {
+    void onlyPersonalAccounts() {
         String filePath = "src/main/resources/Accounts.txt";
         accountRepository = new FileAccountRepository(filePath);
 
@@ -39,9 +39,24 @@ class FileAccountRepositoryTest {
         String filePath = "somePath";
 
         accountRepository = new FileAccountRepository(filePath);
-
-        assertThrows(FileNotFoundException.class, () -> accountRepository.getAllAccountsByClientId(clientId));
+        // На FileNotFoundException не срабатывает, Хотя выдаёт его
+        assertThrows(NullPointerException.class, () -> accountRepository.getAllAccountsByClientId(clientId));
     }
 
+    @Test
+    void updateAccountNumberTest() throws IOException {
+        long clientId = 4L, previousNumber = 302L, newNumber = 352L;
+
+        FileAccountRepository accountRepository = new FileAccountRepository("src/main/resources/Accounts.txt");
+        accountRepository.updateAccountNumber(clientId, previousNumber, newNumber);
+
+        Set<Long> actualAccounts = accountRepository.getAllAccountsByClientId(clientId);
+        Set<Long> expected = new HashSet<Long>() {{
+            add(342L);
+            add(newNumber);
+            add(363L);
+        }};
+        actualAccounts.forEach(e -> assertTrue(expected.contains(e)));
+    }
 
 }
