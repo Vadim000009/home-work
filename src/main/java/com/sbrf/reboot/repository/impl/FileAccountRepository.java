@@ -70,10 +70,11 @@ public class FileAccountRepository implements AccountRepository {
         try {
             fileWriter = new FileWriter(new File(pathToRepository), false);
             fileWriter.write(strData.replace(strFind, strReplace));
-            fileWriter.flush();
-            fileWriter.close();
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+            fileWriter.flush();
+            fileWriter.close();
         }
     }
 
