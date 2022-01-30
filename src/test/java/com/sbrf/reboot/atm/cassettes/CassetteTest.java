@@ -25,4 +25,27 @@ class CassetteTest {
 
         Assertions.assertEquals(1, cassette.getCountBanknotes());
     }
+    @Test
+    void successGenerateNames() {
+        String[] profileNames = {"Vadim", "Alisa", "Maria", "Evgenia"};
+        Assertions.assertTrue(Generate.isInArray("Alisa", profileNames));
+    }
+
+    @Test
+    void failGenerateNames() {
+        String[] profileNames = {"Vadim", "Alise"};
+        Assertions.assertFalse(Generate.isInArray("Maria", profileNames));
+    }
+
+    @Test
+    void successGenerateValuesInCassette() {
+        Integer[] money = {10, 20, 30};   // Compare потребует Integer
+        Assertions.assertTrue(Generate.isInArray(20, money));
+    }
+
+    @Test
+    void failGenerateValuesInCassette() {
+        Double[] money = {10.0, 20.0, 30.0};  // Compare потребует Double
+        Assertions.assertTrue(Generate.isInArray(10.0, money));
+    }
 }
