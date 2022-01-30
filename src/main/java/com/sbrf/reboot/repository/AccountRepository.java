@@ -6,5 +6,5 @@ public interface AccountRepository {
 
     Set<Long> getAllAccountsByClientId(long clientId);
 
-    Set<Long> getAllAccounts();
+//    Set<Long> getAllAccounts();
 }
