@@ -1,4 +1,4 @@
-package com.sbrf.reboot;
+package com.sbrf.reboot.service;
 
 import com.sbrf.reboot.repository.AccountRepository;
 import lombok.NonNull;
@@ -16,10 +16,10 @@ public class AccountService {
         return accountRepository.getAllAccountsByClientId(clientId).contains(contractNumber);
     }
 
-    public long getClientIdByContractNumber(long contractNumber) {
-        Set<Long> accounts = accountRepository.getAllAccounts();
-        return accounts.stream().filter(
-                (x) -> accountRepository.getAllAccountsByClientId(x).contains(contractNumber)
-        ).findFirst().get();
-    }
+//    public long getClientIdByContractNumber(long contractNumber) {
+//        Set<Long> accounts = accountRepository.getAllAccounts();
+//        return accounts.stream().filter(
+//                (x) -> accountRepository.getAllAccountsByClientId(x).contains(contractNumber)
+//        ).findFirst().get();
+//    }
 }
