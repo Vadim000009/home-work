@@ -8,24 +8,45 @@ import java.util.GregorianCalendar;
 
 public class EqualsHashCodeTest {
 
-     class Car {
+    class Car {
         String model;
         String color;
         Calendar releaseDate;
         int maxSpeed;
 
         @Override
-        public boolean equals(Object o) {
-
+        public boolean equals(Object obj) {
+            // Сравнение для защиты от NullPointerException (потому что обработчики много кушают, и лучше всего, когда все обработки через if)
             //Рефлексивность: объект должен равняться самому себе
-            if (o == this)
-                return true;
+            if (obj == this) return true;
+            // Проверка на null
+            if ( obj == null) return false;
+            // Проверка на соответствие классу
+            if (obj.getClass() != this.getClass()) return false;
 
-            return false;
+            Car objCar = (Car) obj;
+            return  maxSpeed == objCar.maxSpeed && (model == objCar.model || model.equals(objCar.model))
+                    && (color == objCar.color || color.equals(objCar.color))
+                    && (releaseDate == objCar.releaseDate || releaseDate.equals(objCar.releaseDate));
         }
 
+        @Override
+        public int hashCode(){
+            final int base = 13;
+            int result = 1;
 
-     }
+            int hashCarColor = (null == color) ? 0 : color.hashCode();
+            int hashCarModel = (null == model) ? 0 : model.hashCode();
+            int hashCarCalendar = (null == releaseDate) ? 0 : releaseDate.hashCode();
+            // Можно через цикл, но думаю, что такое выполнение потребует меньше кроцессорнго времени, ну плюс ко всему
+            // это же хэш, сюда редко смотрят)
+            result = base * result + hashCarModel;
+            result = base * result + hashCarColor;
+            result = base * result + hashCarCalendar;
+            result = base * result + maxSpeed;
+            return result;
+        }
+    }
 
     @Test
     public  void assertTrueEquals() {
@@ -98,5 +119,97 @@ public class EqualsHashCodeTest {
 
     }
 
+    /*  тест на null    */
+    @Test
+    public void trueNullEqualsTest(){
+        Car car = new Car();
+        car.model = "Mitsubishi";
+        car.color = "black";
+        car.releaseDate = new GregorianCalendar(2009, 4, 30);
+        car.maxSpeed = 200;
 
+        Assertions.assertFalse(car.equals(null));
+    }
+
+    /*  Тест на рефлексию   */
+    @Test
+    public void trueReflexEqualsTest(){
+        Car car = new Car();
+        car.model = "Mitsubishi";
+        car.color = "black";
+        car.releaseDate = new GregorianCalendar(2009, 4, 30);
+        car.maxSpeed = 200;
+
+        Assertions.assertTrue(car.equals(car));
+    }
+
+    /*  Тест на симметрию   */
+    @Test
+    public void trueSymmetryEqualsTest(){
+        Car car1 = new Car();
+        Car car2 = new Car();
+
+        car1.model = "Dodge";
+        car1.color = "red";
+        car1.releaseDate = new GregorianCalendar(2022, 1, 18);
+        car1.maxSpeed = 160;
+
+        car2.model = "Dodge";
+        car2.color = "red";
+        car2.releaseDate = new GregorianCalendar(2022, 1, 18);
+        car2.maxSpeed = 160;
+
+        Assertions.assertEquals(car1.equals(car2),car2.equals(car1));
+    }
+
+    /*  Тест на транзитивность  */
+    @Test
+    public void trueTransitivityEqualsTest(){
+        Car car1 = new Car();
+        Car car2 = new Car();
+        Car car3 = new Car();
+
+        car1.model = "Volvo";
+        car1.color = "blue";
+        car1.releaseDate = new GregorianCalendar(2000, 1, 18);
+        car1.maxSpeed = 120;
+
+        car2.model = "Volvo";
+        car2.color = "blue";
+        car2.releaseDate = new GregorianCalendar(2000, 1, 18);
+        car2.maxSpeed = 120;
+
+        car3.model = "Volvo";
+        car3.color = "blue";
+        car3.releaseDate = new GregorianCalendar(2000, 1, 18);
+        car3.maxSpeed = 120;
+
+        Assertions.assertEquals(car1.equals(car2) == car2.equals(car3),car3.equals(car1));
+    }
+
+    /*  Согласованность   */
+    @Test
+    public void trueConsistencyEqualsTest(){
+        Car car1 = new Car();
+        Car car2 = new Car();
+
+        car1.model = "Volvo";
+        car1.color = "blue";
+        car1.releaseDate = new GregorianCalendar(2000, 1, 18);
+        car1.maxSpeed = 120;
+
+        car2.model = "Volvo";
+        car2.color = "blue";
+        car2.releaseDate = new GregorianCalendar(2000, 1, 18);
+        car2.maxSpeed = 120;
+
+        // Два объекта равны - true, пока значения в переменных этих объектах равны, но как только
+        // одна из переменных в объекте примет другое значение, то false
+        for (int i= 0; i < 30; i++){
+            if (!car1.equals(car2))
+                Assertions.assertNotEquals(car1, car2);
+            if (i == 20)
+                car2.maxSpeed = 200;
+        }
+    }
 }
